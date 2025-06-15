@@ -103,8 +103,12 @@
 3. Multilingual support
 4. Add commands for controlling apps (e.g., VSCode, Spotify).
 ---
+
 ## 🧑‍💻 Developed by
+
 -Harvinder Kaur
+
 -Final Year Student | Python & AI Enthusiast
+
 -GitHub Profile
 
