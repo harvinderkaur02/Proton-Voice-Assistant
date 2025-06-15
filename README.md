@@ -1,5 +1,6 @@
 # 🧠 PROTON - Desktop Voice Assistant
 
+
 **PROTON** is a smart desktop-based voice assistant developed in Python. It interacts through speech, executes system commands, navigates files, performs Google searches, fetches dates and locations, and more — all hands-free.
 
 ---
@@ -101,6 +102,7 @@
 2. Integrate chatbot (e.g., GPT)
 3. Multilingual support
 4. Add commands for controlling apps (e.g., VSCode, Spotify).
+
 
 ## 🧑‍💻 Developed by
 Harvinder Kaur
