@@ -106,9 +106,7 @@
 
 ## 🧑‍💻 Developed by
 
--Harvinder Kaur
+**Harvinder Kaur
+**Final Year Student | Python & AI Enthusiast
 
--Final Year Student | Python & AI Enthusiast
-
--GitHub Profile
 
