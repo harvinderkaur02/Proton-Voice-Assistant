@@ -105,8 +105,17 @@
 2. Integrate chatbot (e.g., GPT)
 3. Multilingual support
 4. Add commands for controlling apps (e.g., VSCode, Spotify).
+
+---
+## 📜 License
+This project is licensed under the MIT License.
+
 ---
 
+## 🤝 Contributing
+Pull requests are welcome! For major changes, open an issue first to discuss what you'd like to change.
+
+---
 ## 🧑‍💻 Developed by
 
 Harvinder Kaur
