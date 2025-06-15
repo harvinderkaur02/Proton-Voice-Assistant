@@ -77,7 +77,7 @@
 3. Run the assistant:
    ```bash
    python src/Proton.py
-
+---
 ## 📁 Project Structure
     ```bash
         Proton-Voice-Assistant/
@@ -87,13 +87,14 @@
     │   └── app.py              # Optional GUI handling or other components
     ├── requirements.txt
     └── README.md
+---
 
 ##  🙌 Credits
 - Voice & speech libraries: speech_recognition, pyttsx3
 - GUI: tkinter
 - Tools: keyboard, pyautogui, webbrowser, os, threading
 
-
+---
 
 ## 📌 Future Improvements
 
@@ -101,9 +102,9 @@
 2. Integrate chatbot (e.g., GPT)
 3. Multilingual support
 4. Add commands for controlling apps (e.g., VSCode, Spotify).
-
+---
 ## 🧑‍💻 Developed by
-Harvinder Kaur
-Final Year Student | Python & AI Enthusiast
-GitHub Profile
+-Harvinder Kaur
+-Final Year Student | Python & AI Enthusiast
+-GitHub Profile
 
