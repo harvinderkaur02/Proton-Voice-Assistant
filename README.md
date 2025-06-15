@@ -3,6 +3,7 @@
 ![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-blue?style=for-the-badge)
 
+
 **PROTON** is a smart desktop-based voice assistant developed in Python. It interacts through speech, executes system commands, navigates files, performs Google searches, fetches dates and locations, and more — all hands-free.
 
 ---
@@ -122,4 +123,9 @@ Harvinder Kaur
 
 Final Year Student | Python & AI Enthusiast
 
+
+## 🧑‍💻 Developed by
+Harvinder Kaur
+Final Year Student | Python & AI Enthusiast
+GitHub Profile
 
