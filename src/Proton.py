@@ -13,7 +13,16 @@ from os.path import isfile, join
 import smtplib
 import wikipedia
 import app
+import pyjokes
+import pywhatkit
 from threading import Thread
+#---adding new modules
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+
+
+
 
 # -------------Object Initialization---------------
 today = date.today()
@@ -116,6 +125,7 @@ def respond(voice_data):
     elif 'exit' in voice_data or 'terminate' in voice_data:
         app.ChatBot.close()
         sys.exit()
+
         # Wikipedia Integration (final fixed version)
     elif any(phrase in command for phrase in ['who is', 'what is', 'tell me about']):
         query = None
@@ -139,9 +149,42 @@ def respond(voice_data):
             reply("I couldn't find any result for your query.")
         except Exception as e:
             reply("Something went wrong while searching Wikipedia.")
-            print("Wikipedia Error:", e)
+            print("Wikipedia Error:", e)  
 
-    
+
+    #Screenshot Control
+    elif 'screenshot' in command or 'take screenshot' in command:
+        try:
+            img = pyautogui.screenshot()
+            timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f"screenshot_{timestamp}.png"
+            filepath = os.path.join(os.getcwd(), filename)
+            img.save(filepath)
+            reply(f"Screenshot saved as {filename}")
+        except Exception as e:
+            reply("Failed to take screenshot")
+            print("Screenshot Error:", e)
+    #remember feature
+    elif 'remember that' in command or 'remember this' in command:
+        reply("What should I remember?")
+        memory = record_audio()
+        if memory:
+            with open('memory.txt', 'w') as f:
+                f.write(memory)
+            reply("I've remembered that.")
+
+    elif 'what do you remember' in command or 'do you remember' in command:
+        try:
+            with open('memory.txt', 'r') as f:
+                data = f.read()
+            if data:
+                reply(f"You told me to remember: {data}")
+            else:
+                reply("I don't have anything stored in memory.")
+        except FileNotFoundError:
+            reply("I don't remember anything yet.")
+
+
     # DYNAMIC CONTROLS
     elif 'copy' in voice_data:
         with keyboard.pressed(Key.ctrl):
@@ -202,45 +245,128 @@ def respond(voice_data):
                 app.ChatBot.addAppMsg(filestr)
     # ---------- APP LAUNCHER ----------
     # ---------- APP LAUNCHER ----------
+    elif 'open' in voice_data and not any(site in voice_data for site in ['youtube', 'instagram', 'linkedin', 'facebook', 'github']):
+
+        print(f"App Launch Command: {command}")  # Debug print
+
+        app_paths = {
+            'notepad': 'notepad',
+            'chrome': r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+            'calculator': 'calc',
+            'calc': 'calc',
+            'cmd': 'start cmd',
+            'command prompt': 'start cmd',
+            'word': r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE",
+            'excel': r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
+        }
+
+        launched = False
+        for app_name, path in app_paths.items():
+            if app_name in command:
+                if path.endswith('.exe') or '\\' in path:
+                    if os.path.exists(path):
+                        os.startfile(path)
+                        reply(f"Opening {app_name.title()}")
+                    else:
+                        reply(f"{app_name.title()} is not installed or path is incorrect.")
+                else:
+                    os.system(path)
+                    reply(f"Opening {app_name.title()}")
+                launched = True
+                break
+
+        if not launched:
+            reply("I don't recognize this app. You can add more in the code!")
+  #--------- youtube feature--------------------
+    elif 'play' in command and 'on youtube' in command:
+        song = command.replace('play', '').replace('on youtube', '').strip()
+        reply(f"Playing {song} on YouTube")
+        try:
+            pywhatkit.playonyt(song)
+        except Exception as e:
+            reply("Something went wrong while opening YouTube.")
+            print("YouTube Error:", e)
+
+   #-----------joke feature--------------------
+    elif 'joke' in command or 'funny' in command or 'make me laugh' in command:
+        joke = pyjokes.get_joke()
+        reply(joke)
+
+ # ---------- OPEN SPECIFIC WEBSITE FEATURE ----------
     elif 'open' in voice_data:
-        if 'notepad' in voice_data:
-            os.system('notepad')
-            reply('Opening Notepad')
+        if 'youtube' in voice_data:
+            webbrowser.open("https://www.youtube.com")
+            reply("Opening YouTube")
 
-        elif 'chrome' in voice_data:
-            chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-            if os.path.exists(chrome_path):
-                os.startfile(chrome_path)
-                reply('Opening Chrome')
-            else:
-                reply("Chrome path not found. Please check if it's installed.")
+        elif 'instagram' in voice_data:
+            webbrowser.open("https://www.instagram.com")
+            reply("Opening Instagram")
 
-        elif 'calculator' in voice_data or 'calc' in voice_data:
-            os.system('calc')
-            reply('Opening Calculator')
+        elif 'linkedin' in voice_data:
+            webbrowser.open("https://www.linkedin.com")
+            reply("Opening LinkedIn")
 
-        elif 'command prompt' in voice_data or 'cmd' in voice_data:
-            os.system('start cmd')
-            reply('Opening Command Prompt')
+        elif 'facebook' in voice_data:
+            webbrowser.open("https://www.facebook.com")
+            reply("Opening Facebook")
 
-        elif 'word' in voice_data:
-            word_path = r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"
-            if os.path.exists(word_path):
-                os.startfile(word_path)
-                reply('Opening Word')
-            else:
-                reply("Word is not installed or path is incorrect.")
+        elif 'github' in voice_data:
+            webbrowser.open("https://www.github.com")
+            reply("Opening GitHub")
 
-        elif 'excel' in voice_data:
-            excel_path = r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
-            if os.path.exists(excel_path):
-                os.startfile(excel_path)
-                reply('Opening Excel')
-            else:
-                reply("Excel is not installed or path is incorrect.")
+        # Optional: add more websites here
+
+
 
         else:
-            reply("I don't recognize this app. You can add more in the code!")
+            reply("I don't recognize this website. Please try a different name.")
+
+    #-----Google search anything-----
+    elif 'search' in voice_data:
+        query = voice_data.split('search', 1)[1].strip()
+        if query:
+            reply(f"Searching Google for {query}")
+            url = f"https://www.google.com/search?q={query.replace(' ', '+')}"
+            webbrowser.open(url)
+            reply("Here are the search results.")
+        else:
+            reply("What should I search for?")
+
+    #-----Increaase/Decrease/Mute Feature------
+    elif 'increase volume' in command or 'turn up the volume' in command:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        current_volume = volume.GetMasterVolumeLevelScalar()
+        new_volume = min(current_volume + 0.1, 1.0)
+        volume.SetMasterVolumeLevelScalar(new_volume, None)
+        reply("Volume increased.")
+
+    elif 'decrease volume' in command or 'turn down the volume' in command:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        current_volume = volume.GetMasterVolumeLevelScalar()
+        new_volume = max(current_volume - 0.1, 0.0)
+        volume.SetMasterVolumeLevelScalar(new_volume, None)
+        reply("Volume decreased.")
+
+    elif 'unmute volume' in command or 'unmute the sound' in command:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        volume.SetMute(0, None)
+        reply("Sound unmuted.")
+
+    elif 'mute volume' in command or 'mute the sound' in command:
+        devices = AudioUtilities.GetSpeakers()
+        interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+        volume = cast(interface, POINTER(IAudioEndpointVolume))
+        volume.SetMute(1, None)
+        reply("Sound muted.")
+
+
+
 
             
     else:
